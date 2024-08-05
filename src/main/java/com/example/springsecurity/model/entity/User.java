@@ -22,10 +22,11 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String firstname;
-    private String lastname;
+    private String fullName;
     @Column(unique = true)
-    private String username;
+    private String email;
+    private String phone;
+    private String address;
     private String password;
     @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
@@ -42,7 +43,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override

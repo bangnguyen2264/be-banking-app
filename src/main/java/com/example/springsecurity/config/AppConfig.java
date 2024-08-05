@@ -34,30 +34,15 @@ public class AppConfig {
             roleRepository.save(admin);
 
             User demoUser = User.builder()
-                    .lastname("Admin")
-                    .firstname("System")
-                    .username("admin")
-                    .password(passwordEncoder.encode("password"))
+                    .fullName("Admin")
+                    .email("admin@example.com")
+                    .password(passwordEncoder.encode("123"))
                     .role(admin)
                     .build();
 
             userRepository.save(demoUser);
 
-            // List of first names and last names
-            String[] firstNames = {"John", "Jane", "Michael", "John", "Chris", "Anna", "David", "Sophia", "Daniel", "Olivia"};
-            String[] lastNames = {"Jones", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Martinez", "Hernandez"};
 
-            // Create 10 additional users with different names
-            for (int i = 0; i < 10; i++) {
-                User userInstance = User.builder()
-                        .lastname(lastNames[i])
-                        .firstname(firstNames[i])
-                        .username("user" + (i + 1))
-                        .password(passwordEncoder.encode("password" + (i + 1)))
-                        .role(user)
-                        .build();
-                userRepository.save(userInstance);
-            }
         };
     }
 

@@ -1,25 +1,38 @@
 package com.example.springsecurity.demo;
 
+import com.example.springsecurity.model.dto.UserDto;
+import com.example.springsecurity.model.form.UpdateForm;
+import com.example.springsecurity.service.impl.UserServiceImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/v1/demo_controller")
+@RequestMapping("/api/v1/admin")
+@RequiredArgsConstructor
 public class AdminController {
+    private final UserServiceImpl userService;
     @GetMapping
-    public String get(){
-        return "GET: admin controller";
+    public ResponseEntity<List<UserDto>> getAll(){
+        return ResponseEntity.ok(userService.getAll());
     }
-    @PostMapping
-    public String post(){
-        return "POST: admin controller";
+    @GetMapping("/user/search")
+    public ResponseEntity<List<UserDto>> searchUser(@RequestParam(name = "query") String query) {
+        return ResponseEntity.ok(userService.searchUser(query));
     }
-    @PutMapping
-    public String put(){
-        return "PUT: admin controller";
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<UserDto> getById(Long id){
+        return ResponseEntity.ok(userService.getById(id));
     }
-    @DeleteMapping
-    public String delete(){
-        return "DELETE: admin controller";
+    @PutMapping("/user/update/{userId}")
+    public ResponseEntity<String> update(@PathVariable Long userId, @RequestBody UpdateForm form){
+        return ResponseEntity.ok(userService.update(userId,form));
+    }
+    @DeleteMapping("/user/delete")
+    public  ResponseEntity<String> delete(@PathVariable Long id){
+        return ResponseEntity.ok(userService.delete(id));
     }
 
 }

@@ -15,5 +15,7 @@ public interface UserService {
     public String changePassword(ChangePasswordForm request, Principal connectedUser) ;
     public String update(Long id, UpdateForm form);
     public String delete(Long id);
+    public UserDto getMe(Principal principal);
+    public String updateMe(Principal principal, UpdateForm form);
 
 }

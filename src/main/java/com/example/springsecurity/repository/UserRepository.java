@@ -11,13 +11,11 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUsername(String username);
-    boolean existsByUsername(String username);
+    Optional<User> findByEmail(String email);
+    boolean existsByEmail(String email);
 
     @Query("SELECT p FROM User p " +
-            "WHERE p.firstname like concat('%',:query,'%') " +
-            "or p.lastname like concat('%',:query,'%')" +
-            "or p.username like concat('%',:query,'%')"
+            "WHERE p.fullName like concat('%',:query,'%') "
     )
     List<User> searchUser(String query);
 }

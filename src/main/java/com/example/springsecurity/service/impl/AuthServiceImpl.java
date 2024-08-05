@@ -36,31 +36,30 @@ public class AuthServiceImpl implements AuthService {
     public AuthDto login(SignInForm form) {
 
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(form.getUserName(), form.getPassword())
+                new UsernamePasswordAuthenticationToken(form.getEmail(), form.getPassword())
         );
 
         String accessToken = jwtService.generateAccessToken(authentication);
         String refreshToken = jwtService.generateRefreshToken(authentication);
 
-        User user = userRepository.findByUsername(form.getUserName())
-                .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + form.getUserName()));
+        User user = userRepository.findByEmail(form.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + form.getEmail()));
 
         log.info("User {} logged in", user.getUsername());
         return AuthDto.from(user, accessToken, refreshToken);    }
 
     @Override
     public String register(SignUpForm form) {
-        if (userRepository.existsByUsername(form.getUserName())) {
-            throw new IllegalArgumentException("Username already exists");
+        if (userRepository.existsByEmail(form.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
         }
 
         Role role = roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new IllegalArgumentException("Not found role ROLE_USER"));
 
         User user = User.builder()
-                .firstname(form.getFirstname())
-                .lastname(form.getLastname())
-                .username(form.getUserName())
+                .fullName(form.getFullName())
+                .email(form.getEmail())
                 .password(passwordEncoder.encode(form.getPassword()))
                 .role(role)
                 .build();
@@ -78,8 +77,8 @@ public class AuthServiceImpl implements AuthService {
             if (jwtService.validateRefreshToken(refreshToken)) {
                 Authentication auth = jwtService.createAuthentication(refreshToken);
 
-                User user = userRepository.findByUsername(auth.getName())
-                        .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + auth.getName()));
+                User user = userRepository.findByEmail(auth.getName())
+                        .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + auth.getName()));
 
                 log.info("User {} refreshed token", user.getUsername());
                 return AuthDto.from(user, jwtService.generateAccessToken(auth), refreshToken);

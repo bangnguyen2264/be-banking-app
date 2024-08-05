@@ -15,7 +15,7 @@ public class UserDto {
     public static UserDto toDto(User user){
         return UserDto.builder()
                 .id(user.getId())
-                .fullname(user.getLastname()+" "+user.getFirstname())
+                .fullname(user.getFullName())
                 .username(user.getUsername())
                 .role(user.getRole().getName())
                 .build();

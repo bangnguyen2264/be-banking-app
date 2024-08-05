@@ -16,29 +16,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserServiceImpl userService;
-    @GetMapping
-    public ResponseEntity<List<UserDto>> getAll(){
-         return ResponseEntity.ok(userService.getAll());
-     }
-    @GetMapping("/search")
-    public ResponseEntity<List<UserDto>> searchUser(@RequestParam(name = "query") String query) {
-        return ResponseEntity.ok(userService.searchUser(query));
-    }
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserDto> getById(Long id){
-        return ResponseEntity.ok(userService.getById(id));
-    }
 
+    @GetMapping("/get/me")
+    public ResponseEntity<UserDto> getMe(Principal connectedUser){
+        return ResponseEntity.ok(userService.getMe(connectedUser));
+    }
+    @PutMapping("/update/me")
+    public ResponseEntity<String> updateMe(Principal principal,@RequestBody UpdateForm form){
+        return ResponseEntity.ok(userService.updateMe(principal,form));
+    }
     @PatchMapping("/change-password")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordForm request, Principal connectedUser) {
         return ResponseEntity.ok(userService.changePassword(request, connectedUser));
     }
-    @PutMapping("/update/{userId}")
-    public ResponseEntity<String> update(@PathVariable Long userId, @RequestBody UpdateForm form){
-        return ResponseEntity.ok(userService.update(userId,form));
-    }
-    @DeleteMapping("/delete")
-    public  ResponseEntity<String> delete(@PathVariable Long id){
-        return ResponseEntity.ok(userService.delete(id));
-    }
+
+
 }

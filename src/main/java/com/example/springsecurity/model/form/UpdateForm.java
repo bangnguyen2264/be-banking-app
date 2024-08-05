@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 public class UpdateForm {
-    private String lastname;
-    private String firstname;
-    private String username;
+    private String fullName;
+    private String email;
+    private String phone;
+    private String address;
 }
