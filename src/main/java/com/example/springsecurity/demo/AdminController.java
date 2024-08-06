@@ -1,7 +1,7 @@
 package com.example.springsecurity.demo;
 
 import com.example.springsecurity.model.dto.UserDto;
-import com.example.springsecurity.model.form.UpdateForm;
+import com.example.springsecurity.model.form.UserForm;
 import com.example.springsecurity.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ public class AdminController {
         return ResponseEntity.ok(userService.getById(id));
     }
     @PutMapping("/user/update/{userId}")
-    public ResponseEntity<String> update(@PathVariable Long userId, @RequestBody UpdateForm form){
+    public ResponseEntity<String> update(@PathVariable Long userId, @RequestBody UserForm form){
         return ResponseEntity.ok(userService.update(userId,form));
     }
     @DeleteMapping("/user/delete")

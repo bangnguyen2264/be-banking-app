@@ -3,20 +3,16 @@ package com.example.springsecurity.service.impl;
 import com.example.springsecurity.model.dto.UserDto;
 import com.example.springsecurity.model.entity.User;
 import com.example.springsecurity.model.form.ChangePasswordForm;
-import com.example.springsecurity.model.form.UpdateForm;
+import com.example.springsecurity.model.form.UserForm;
 import com.example.springsecurity.repository.UserRepository;
 import com.example.springsecurity.service.UserService;
 import com.example.springsecurity.util.Ultilities;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String update(Long id, UpdateForm form) {
+    public String update(Long id, UserForm form) {
         User user = userRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("User not exist"));
         user.setFullName(form.getFullName());
         user.setEmail(form.getEmail());
@@ -87,7 +83,7 @@ public class UserServiceImpl implements UserService {
         return "Change password complete";
     }
     @Override
-    public String updateMe(Principal principal, UpdateForm form) {
+    public String updateMe(Principal principal, UserForm form) {
         User user = userRepository.findByEmail(Ultilities.getMe()).orElseThrow();
         user.setFullName(form.getFullName());
         user.setEmail(form.getEmail());
