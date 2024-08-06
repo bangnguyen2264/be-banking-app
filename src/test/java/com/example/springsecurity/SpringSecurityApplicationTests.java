@@ -1,5 +1,6 @@
 package com.example.springsecurity;
 
+import com.example.springsecurity.util.Ultilities;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -8,6 +9,7 @@ class SpringSecurityApplicationTests {
 
 	@Test
 	void contextLoads() {
+		Ultilities.getMe();
 	}
 
 }

@@ -67,12 +67,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getMe(Principal principal) {
-        User user = Ultilities.getMe(principal);
+        User user = userRepository.findByEmail(Ultilities.getMe()).orElseThrow();
         return UserDto.toDto(user);
     }
     @Override
     public String changePassword(ChangePasswordForm request, Principal connectedUser) {
-        User user = Ultilities.getMe(connectedUser);
+        User user = userRepository.findByEmail(Ultilities.getMe()).orElseThrow();
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Wrong password");
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public String updateMe(Principal principal, UpdateForm form) {
-    User user = Ultilities.getMe(principal);
+        User user = userRepository.findByEmail(Ultilities.getMe()).orElseThrow();
         user.setFullName(form.getFullName());
         user.setEmail(form.getEmail());
         user.setPhone(form.getPhone());
