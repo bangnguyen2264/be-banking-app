@@ -32,8 +32,9 @@ public class User implements UserDetails {
     private String password;
     @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
-
-
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    private Account account;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.getName()));

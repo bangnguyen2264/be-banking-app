@@ -2,15 +2,18 @@ package com.example.springsecurity.service.impl;
 
 import com.example.springsecurity.exception.InvalidRefreshTokenException;
 import com.example.springsecurity.model.dto.AuthDto;
+import com.example.springsecurity.model.entity.Account;
 import com.example.springsecurity.model.entity.Role;
 import com.example.springsecurity.model.entity.User;
 import com.example.springsecurity.model.form.SignInForm;
 import com.example.springsecurity.model.form.SignUpForm;
+import com.example.springsecurity.repository.AccountRepository;
 import com.example.springsecurity.repository.RoleRepository;
 import com.example.springsecurity.repository.UserRepository;
 
 import com.example.springsecurity.security.JwtService;
 import com.example.springsecurity.service.AuthService;
+import com.example.springsecurity.util.Ultilities;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final AccountRepository accountRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
@@ -65,7 +69,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         userRepository.save(user);
-
+        createAccount(user);
         log.info("User {} registered", user.getUsername());
         return "Success register new user";
     }
@@ -85,5 +89,20 @@ public class AuthServiceImpl implements AuthService {
             }
         }
         throw new InvalidRefreshTokenException(refreshToken);
+    }
+
+    private void createAccount(User user) {
+        String accountNumber;
+        do {
+            accountNumber = Ultilities.generateAccountNumber();
+        } while (accountRepository.existsByAccountNumber(accountNumber));
+        Account account = Account.builder()
+                .accountNumber(accountNumber)
+                .balance(0)
+                .user(user)
+                .build();
+        accountRepository.save(account);
+        user.setAccount(account);
+        userRepository.save(user);
     }
 }

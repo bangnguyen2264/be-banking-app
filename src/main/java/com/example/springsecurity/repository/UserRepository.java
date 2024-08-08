@@ -18,4 +18,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE p.fullName like concat('%',:query,'%') "
     )
     List<User> searchUser(String query);
+
 }

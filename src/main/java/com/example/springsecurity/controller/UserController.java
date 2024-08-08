@@ -9,12 +9,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserServiceImpl userService;
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<UserDto> getById(Long id){
+        return ResponseEntity.ok(userService.getById(id));
+    }
+
+    @GetMapping("/user/search")
+    public ResponseEntity<List<UserDto>> searchUser(@RequestParam(name = "query") String query) {
+        return ResponseEntity.ok(userService.searchUser(query));
+    }
 
     @GetMapping("/get/me")
     public ResponseEntity<UserDto> getMe(Principal connectedUser){

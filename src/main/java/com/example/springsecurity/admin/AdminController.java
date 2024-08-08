@@ -1,4 +1,4 @@
-package com.example.springsecurity.demo;
+package com.example.springsecurity.admin;
 
 import com.example.springsecurity.model.dto.UserDto;
 import com.example.springsecurity.model.form.UserForm;
@@ -18,14 +18,8 @@ public class AdminController {
     public ResponseEntity<List<UserDto>> getAll(){
         return ResponseEntity.ok(userService.getAll());
     }
-    @GetMapping("/user/search")
-    public ResponseEntity<List<UserDto>> searchUser(@RequestParam(name = "query") String query) {
-        return ResponseEntity.ok(userService.searchUser(query));
-    }
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<UserDto> getById(Long id){
-        return ResponseEntity.ok(userService.getById(id));
-    }
+
+
     @PutMapping("/user/update/{userId}")
     public ResponseEntity<String> update(@PathVariable Long userId, @RequestBody UserForm form){
         return ResponseEntity.ok(userService.update(userId,form));

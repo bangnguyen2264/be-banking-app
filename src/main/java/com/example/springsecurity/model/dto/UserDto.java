@@ -16,6 +16,7 @@ public class UserDto {
     private String email;
     private String phone;
     private String address;
+    private AccountDto account;
 
     public static UserDto toDto(User user){
         return UserDto.builder()
@@ -25,6 +26,7 @@ public class UserDto {
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .address(user.getAddress())
+                .account(AccountDto.toDtoFromUser(user))
                 .build();
     }
 }
