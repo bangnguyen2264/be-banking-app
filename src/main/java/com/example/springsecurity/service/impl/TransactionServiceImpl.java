@@ -39,7 +39,7 @@ public class TransactionServiceImpl implements TransactionService {
         if(checkCurrentUser(transferForm.getFromAccount())  ){
             Account senderAccount = accountRepository.findByAccountNumber(transferForm.getFromAccount()).orElseThrow();
             Account receiveAccount = accountRepository.findByAccountNumber(transferForm.getToAccount()).orElseThrow();
-            if (checkValidBalance(transferForm.getToAccount(), transferForm.getAmount())) {
+            if (checkValidAmount(transferForm.getFromAccount(), transferForm.getAmount())) {
                 senderAccount.setBalance(senderAccount.getBalance()-transferForm.getAmount());
                 receiveAccount.setBalance(receiveAccount.getBalance()+transferForm.getAmount());
                 accountRepository.saveAll(List.of(receiveAccount,senderAccount));
@@ -101,7 +101,7 @@ public class TransactionServiceImpl implements TransactionService {
         accountRepository.saveAll(List.of(senderAccount,receiverAccount));
         transactionRepository.saveAll(List.of(senderForm, receiveForm));
     }
-    private boolean checkValidBalance(String accountNumber, int amount) {
+    private boolean checkValidAmount(String accountNumber, int amount) {
         Account account = accountRepository.findByAccountNumber(accountNumber).orElseThrow();
         return amount <= account.getBalance();
     }
