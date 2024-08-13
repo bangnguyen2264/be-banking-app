@@ -1,15 +1,13 @@
 package com.example.springsecurity.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.math.BigDecimal;
 @Entity
 @Table(name = "transactions")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -17,8 +15,9 @@ public class Transaction extends BaseEntity {
     @Id
     @GeneratedValue
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "accountId")
+    @JsonBackReference
     private Account account;
     private String fromAccount;
     private String toAccount;

@@ -1,6 +1,6 @@
 package com.example.springsecurity.service.impl;
 
-import com.example.springsecurity.model.dto.AccountDto;
+import com.example.springsecurity.model.dto.TransactionDto;
 import com.example.springsecurity.model.entity.Account;
 import com.example.springsecurity.model.entity.Card;
 import com.example.springsecurity.model.entity.Transaction;
@@ -13,14 +13,18 @@ import com.example.springsecurity.repository.TransactionRepository;
 import com.example.springsecurity.repository.UserRepository;
 import com.example.springsecurity.service.TransactionService;
 import com.example.springsecurity.util.Ultilities;
+import jakarta.persistence.Transient;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class TransactionServiceImpl implements TransactionService {
 
     private final UserRepository userRepository;
@@ -29,9 +33,17 @@ public class TransactionServiceImpl implements TransactionService {
     private final CardRepository cardRepository;
 
     @Override
-    public AccountDto findByAccountNumber(String accountNumber) {
-        Account account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(()->new RuntimeException("Account not found"));
-        return AccountDto.toDto(account);
+    public List<TransactionDto> getTransactions() {
+            User currentUser = userRepository.findByEmail(Ultilities.getMe())
+                    .orElseThrow();
+            log.info("Current user: {}", currentUser.getUsername());
+            List<Transaction> transaction = currentUser.getAccount().getTransactions();
+            log.info("Transactions: {}", transaction);
+            List<TransactionDto> transactionDtoList = transaction.stream()
+                    .map(TransactionDto::toDto)
+                    .toList();
+            log.info("TransactionDtoList: {}", transactionDtoList.stream().toList());
+            return transactionDtoList;
     }
 
     @Override
@@ -64,8 +76,17 @@ public class TransactionServiceImpl implements TransactionService {
         if(card.isAvailable())
         {
         currentUser.getAccount().setBalance(currentUser.getAccount().getBalance()+card.getAmount());
-        userRepository.save(currentUser);
+
         card.setAvailable(false);
+        Transaction transaction = Transaction.builder()
+                .account(currentUser.getAccount())
+                .transactionType("DEPOSIT")
+                .amount(card.getAmount())
+                .description("Deposit transaction")
+                .build();
+        currentUser.getAccount().getTransactions().add(transaction);
+        transactionRepository.save(transaction);
+        userRepository.save(currentUser);
         cardRepository.save(card);
         return "Deposit successful";
         }

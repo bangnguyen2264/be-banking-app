@@ -1,16 +1,16 @@
 package com.example.springsecurity.model.entity;
 
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "accounts")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -22,7 +22,8 @@ public class Account extends BaseEntity {
     private int balance;
     @OneToOne(mappedBy = "account")
     private User user;
-    @OneToMany(mappedBy = "account")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "account",fetch = FetchType.EAGER)
     private List<Transaction> transactions;
 
 }

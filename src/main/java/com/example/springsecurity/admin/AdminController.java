@@ -24,7 +24,7 @@ public class AdminController {
     public ResponseEntity<String> update(@PathVariable Long userId, @RequestBody UserForm form){
         return ResponseEntity.ok(userService.update(userId,form));
     }
-    @DeleteMapping("/user/delete")
+    @DeleteMapping("/user/delete/{id}")
     public  ResponseEntity<String> delete(@PathVariable Long id){
         return ResponseEntity.ok(userService.delete(id));
     }
