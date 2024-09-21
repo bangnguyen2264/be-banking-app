@@ -7,9 +7,9 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
   datasource:
-    url: jdbc:postgresql://localhost:5432/banking-app
+    url: jdbc:postgresql://localhost:5432/bankingapp
     username: postgres
-    password: 123
+    password: password
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

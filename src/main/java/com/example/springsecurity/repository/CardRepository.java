@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface CardRepository extends JpaRepository<Card,Long> {
     Optional<Card> findBySeriNumber(String seriNumber);
     Card deleteCardByAvailableFalse();
+    boolean existsBySeriNumber(String seriNumber);
 }

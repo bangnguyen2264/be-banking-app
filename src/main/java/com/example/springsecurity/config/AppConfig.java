@@ -1,14 +1,11 @@
 package com.example.springsecurity.config;
 
-import com.example.springsecurity.model.entity.Account;
 import com.example.springsecurity.model.entity.Card;
 import com.example.springsecurity.model.entity.Role;
 import com.example.springsecurity.model.entity.User;
-import com.example.springsecurity.repository.AccountRepository;
 import com.example.springsecurity.repository.CardRepository;
 import com.example.springsecurity.repository.RoleRepository;
 import com.example.springsecurity.repository.UserRepository;
-import com.example.springsecurity.util.Ultilities;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
@@ -16,50 +13,52 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
 @Configuration
 @RequiredArgsConstructor
 @Log4j2
 public class AppConfig {
 
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final CardRepository cardRepository;
+    private final PasswordEncoder passwordEncoder;
+
     @Bean
-    public CommandLineRunner commandLineRunner(
-            UserRepository userRepository,
-            RoleRepository roleRepository,
-            CardRepository cardRepository,
-            PasswordEncoder passwordEncoder
-) {
+    public CommandLineRunner initApp() {
         return args -> {
-            Role user = Role.builder()
-                    .name("ROLE_USER")
-                    .build();
-            Role admin = Role.builder()
-                    .name("ROLE_ADMIN")
-                    .build();
+            if (!roleRepository.existsByName("ROLE_USER")) {
+                roleRepository.save(Role.builder().id(1L).name("ROLE_USER").build());
+            }
+            if (!roleRepository.existsByName("ROLE_ADMIN")) {
+                roleRepository.save(Role.builder().id(2L).name("ROLE_ADMIN").build());
+            }
+            log.info("Roles initialized successfully");
 
-            roleRepository.save(user);
-            roleRepository.save(admin);
+            Role userRole = roleRepository.findById(1L).orElseThrow();
+            Role adminRole = roleRepository.findById(2L).orElseThrow();
 
-            User demoUser = User.builder()
-                    .fullName("Admin")
-                    .email("admin@gmail.com")
-                    .password(passwordEncoder.encode("password"))
-                    .role(admin)
-                    .phone("0123456789")
-                    .address("HCM")
-                    .build();
-            userRepository.save(demoUser);
+            if (!userRepository.existsByEmail("admin@gmail.com")) {
+                userRepository.save(
+                        User.builder()
+                                .id(1L)
+                                .fullName("admin")
+                                .email("admin@gmail.com")
+                                .password(passwordEncoder.encode("admin"))
+                                .build()
+                );
+            }
+            log.info("Admin initialized successfully");
 
-            log.info("Admin created");
-                Card card = Card.builder()
-                        .seriNumber("testcard")
-                        .amount(100000)
-                        .available(true)
-                        .build();
-                cardRepository.save(card);
-
-
+            if (!cardRepository.existsBySeriNumber("testcard")) {
+                cardRepository.save(
+                        Card.builder()
+                                .seriNumber("testcard")
+                                .amount(100000)
+                                .available(true)
+                                .build()
+                );
+            }
+            log.info("Cards initialized successfully");
         };
     }
-
 }

@@ -1,3 +1,3 @@
 spring:
   profiles:
-      active: dev # Môi trường mặc định (có thể là dev, prod, test)
+      active: prod # Môi trường mặc định (có thể là dev, prod, test)
